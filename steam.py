@@ -29,7 +29,6 @@ def steam_spider(df) -> list:
     url1 = "https://store.steampowered.com/search/results/?query&start=0&count=50&dynamic_data=&sort_by=_ASC&ignore_preferences=1&os=win&snr=1_7_7_comingsoon_7&filter=comingsoon&infinite=1"
     try:
         response1 = requests.get(url1, headers = header).text
-        response1.raise_for_status() 
     except:
         print('服务器无响应1')
         try:
