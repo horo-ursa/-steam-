@@ -194,3 +194,4 @@ if __name__ == "__main__":
         ccc = mmmfile.readline()
         print("new num in file: " + ccc)
         mmmfile.close()
+

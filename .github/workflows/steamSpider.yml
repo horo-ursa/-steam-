@@ -3,10 +3,10 @@
 name: "steamSpider"
 
 on:
-  push:
-  pull_request:
+  # push:
+  # pull_request:
   schedule:
-  - cron: '0 13 * * *' #runs at 9pm Beijing time
+  - cron: '*/5 * * * *' # 每5分钟一次，测试用
 
 jobs:
   spider: #name of the job
