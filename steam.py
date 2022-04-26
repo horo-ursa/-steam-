@@ -106,7 +106,7 @@ if __name__ == "__main__":
     lastGameCount = int(file.readline())
     file.close()
 
-    print("lastGameCount: " + lastGameCount)
+    print("lastGameCount: " + str(lastGameCount))
 
     mylist = steam_spider(lastGameCount)
     firstLinkList = []
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         else:
             break
 
-    print("currentGameCount: " + curNum)
+    print("currentGameCount: " + str(curNum))
 
     if curNum != lastGameCount:
 
