@@ -18,10 +18,14 @@ jobs:
     
     
     steps:
-      - name: Setup Python
+      - uses: actions/setup-python@main
+      - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
-          python-version: 
+          python-version: ${{ matrix.python-version }}
+     # You can test your matrix by printing the current Python version
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
       - name: 'Checkout codes' # 步骤一，获取仓库代码
         uses: actions/checkout@v1
       
