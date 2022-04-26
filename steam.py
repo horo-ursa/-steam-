@@ -194,6 +194,12 @@ if __name__ == "__main__":
         wks.set_dataframe(new_data,(1, 1))
 
         #把新数据写进文件里
-        file = open(num_path, "w")
-        file.write(str(curNum))
-        file.close()
+        myfile = open(num_path, "w")
+        myfile.write(str(curNum))
+        myfile.close()
+
+
+        mmmfile = open(num_path, "r")
+        ccc = mmmfile.readline()
+        print("new num: " + ccc)
+        mmmfile.close()
