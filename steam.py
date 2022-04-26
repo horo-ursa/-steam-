@@ -43,6 +43,7 @@ def steam_spider(lastNum) -> list:
     all_url = []
     for i in range(0, times):
         newUrl = "https://store.steampowered.com/search/results/?query&start=" + str(50 * i) +  "&count=50&dynamic_data=&sort_by=_ASC&ignore_preferences=1&os=win&snr=1_7_7_comingsoon_7&filter=comingsoon&infinite=1"
+        print(newUrl)
         tempResponse = requests.get(newUrl, headers = header).text
         tempData = json.loads(tempResponse)
         idAndName = re.findall("https://store.steampowered.com/app/(\d*?)/(.*?)/", tempData["results_html"])
