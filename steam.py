@@ -67,7 +67,9 @@ def taglist(soup):#标签列表
 
 def description(soup):  #游戏描述
     a = soup.find(class_="game_description_snippet")
-    k = str(a.string).replace('	', '').replace('\n', '').replace('\r', '')
+    k = ""
+    if str(a.string) != '':
+        k = str(a.string).replace('	', '').replace('\n', '').replace('\r', '')
     return k
 
 def developer(soup):   #开发商
