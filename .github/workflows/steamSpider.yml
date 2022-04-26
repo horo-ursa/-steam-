@@ -3,10 +3,10 @@
 name: "steamSpider"
 
 on:
-  # push:
-  # pull_request:
+  push:
+  pull_request:
   schedule:
-  - cron: '*/5 * * * *' # 每5分钟一次，测试用
+  - cron: '0 13 * * *' #runs at 9pm Beijing time
 
 jobs:
   spider: #name of the job
@@ -43,12 +43,12 @@ jobs:
       - name: Run code #运行代码
         run: python steam.py
       
-      - uses: actions/checkout@v2    
-      - name: Checkout codes #push back
-        run: |
-          git config --global user.name 'horo-ursa'
-          git config --global user.email 'shixuanf@usc.edu'
-          git add lastCount.txt
-          git commit -am "Automated report"
-          git push
+      # - uses: actions/checkout@v2    
+      # - name: Checkout codes #push back
+      #   run: |
+      #     git config --global user.name 'horo-ursa'
+      #     git config --global user.email 'shixuanf@usc.edu'
+      #     git add lastCount.txt
+      #     git commit -am "Automated report"
+      #     git push
         

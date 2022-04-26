@@ -17,7 +17,6 @@ header = {
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 file_path = os.path.join(base_path, 'credentials.json')
-num_path = os.path.join(base_path, 'lastCount.txt')
 
 curCount = 0
 
@@ -105,11 +104,13 @@ def getdetail(soup):
     return tag,des,dev, pub
 
 if __name__ == "__main__":
-
+    
     #找到上一次的游戏总数
-    file = open(num_path, "r")
-    lastGameCount = int(file.readline())
-    file.close()
+    gc = pygsheets.authorize(service_file = file_path)
+    my_sh = gc.open('Steam每日新收录游戏数据')
+    wks = my_sh[0] #select the first sheet
+    prev_data = wks.get_as_df()
+    lastGameCount = int(prev_data['Link'][0].split(": ")[1])
 
     mylist = steam_spider(lastGameCount)
     firstLinkList = []
@@ -133,8 +134,8 @@ if __name__ == "__main__":
         pubList = []
 
         #存入运行日期
-        nameList.append("收入日期：" + str(datetime.date.today()))
-        linkList.append("")
+        nameList.append(str(datetime.date.today()))
+        linkList.append("本次总数： " + str(curNum))
         tagList.append("")
         desList.append("")
         devList.append("")
@@ -169,29 +170,8 @@ if __name__ == "__main__":
         allList = list(zip(nameList, linkList, tagList, desList, devList, pubList))
         df2 = pd.DataFrame(allList, columns =['Name', 'Link', 'Tag', 'Description', "Developer", "Publisher"])
 
-        #写到Google sheet里
-        #authorization
-        gc = pygsheets.authorize(service_file = file_path)
-        #open the google spreadsheet ('pysheeetsTest' exists)
-        my_sh = gc.open('Steam每日新收录游戏数据')
-        #select the first sheet
-        wks = my_sh[0]
-        #update the first sheet with df, starting at cell B2
-
-        #wks.set_dataframe(df2,(1, 1))
-
-        prev_data = wks.get_as_df()
+        #把两个dataFrame合并在一起
         new_data = pd.concat([df2, prev_data])
         wks.set_dataframe(new_data,(1, 1))
 
-        #把新数据写进文件里
-        myfile = open(num_path, "w")
-        myfile.write(str(curNum))
-        myfile.close()
-
-
-        mmmfile = open(num_path, "r")
-        ccc = mmmfile.readline()
-        print("new num in file: " + ccc)
-        mmmfile.close()
 
