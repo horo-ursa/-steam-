@@ -36,6 +36,9 @@ jobs:
           pip install beautifulsoup4
           pip install pygsheets
           pip install lxml
+          
+      - name: 'Checkout codes' # 步骤一，获取仓库代码
+        uses: actions/checkout@v1
         
       - name: Run code #运行代码
         run: python steam.py
