@@ -40,5 +40,5 @@ jobs:
         uses: actions/checkout@main
         
       - name: Run code #运行代码
-        run: steam
+        run: python steam.py
       
