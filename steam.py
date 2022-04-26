@@ -20,27 +20,44 @@ file_path = os.path.join(base_path, 'credentials.json')
 
 curCount = 0
 
-def steam_spider(lastNum) -> list:
+def steam_spider(df) -> list:
+    global lastGameCount
+    lastGameCount = int(df['Link'][0].split(": ")[1])
+
+    all_url = []
     #找到这次游戏总数
     url1 = "https://store.steampowered.com/search/results/?query&start=0&count=50&dynamic_data=&sort_by=_ASC&ignore_preferences=1&os=win&snr=1_7_7_comingsoon_7&filter=comingsoon&infinite=1"
     try:
         response1 = requests.get(url1, headers = header).text
+        response1.raise_for_status() 
     except:
-        print("当前主页面爬取失败")
-        return
+        print('服务器无响应1')
+        try:
+            response1 = requests.get(url1, headers = header).text
+        except:
+            print('服务器无响应2')
+            try:
+               response1 = requests.get(url1, headers = header).text
+            except:
+                print('服务器无响应3')
+                try:
+                    response1 = requests.get(url1, headers = header).text
+                except:
+                    print('服务器无响应4')
+                
+
     data = json.loads(response1)
     global curNum
     curNum = data["total_count"]
 
     #找到所有的url
     global dif
-    dif = curNum - lastNum
+    dif = curNum - lastGameCount
     if(dif%50 == 0):
         times = int(dif / 50)
     else:
         times = int(dif / 50) + 1
 
-    all_url = []
     for i in range(0, times):
         newUrl = "https://store.steampowered.com/search/results/?query&start=" + str(50 * i) +  "&count=50&dynamic_data=&sort_by=_ASC&ignore_preferences=1&os=win&snr=1_7_7_comingsoon_7&filter=comingsoon&infinite=1"
         tempResponse = requests.get(newUrl, headers = header).text
@@ -110,21 +127,21 @@ if __name__ == "__main__":
     my_sh = gc.open('Steam每日新收录游戏数据')
     wks = my_sh[0] #select the first sheet
     prev_data = wks.get_as_df()
-    lastGameCount = int(prev_data['Link'][0].split(": ")[1])
 
-    mylist = steam_spider(lastGameCount)
-    firstLinkList = []
-    firstNameList = []
-    temp = 0
-    for i in mylist:
-        if temp < dif:
-            firstLinkList.append("https://store.steampowered.com/app/" + i[0])
-            firstNameList.append(i[1])
-            temp += 1
-        else:
-            break
+    mylist = steam_spider(prev_data)
 
     if curNum != lastGameCount:
+        firstLinkList = []
+        firstNameList = []
+        temp = 0
+        for i in mylist:
+            if temp < dif:
+                firstLinkList.append("https://store.steampowered.com/app/" + i[0])
+                firstNameList.append(i[1])
+                temp += 1
+            else:
+                break
+
 
         nameList = []
         linkList = []
@@ -135,7 +152,7 @@ if __name__ == "__main__":
 
         #存入运行日期
         nameList.append(str(datetime.date.today()))
-        linkList.append("本次总数： " + str(curNum))
+        linkList.append("本次总数: " + str(curNum))
         tagList.append("")
         desList.append("")
         devList.append("")
