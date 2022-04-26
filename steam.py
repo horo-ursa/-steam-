@@ -106,6 +106,8 @@ if __name__ == "__main__":
     lastGameCount = int(file.readline())
     file.close()
 
+    print("lastGameCount: " + lastGameCount)
+
     mylist = steam_spider(lastGameCount)
     firstLinkList = []
     firstNameList = []
@@ -118,66 +120,70 @@ if __name__ == "__main__":
         else:
             break
 
-    nameList = []
-    linkList = []
-    tagList = []
-    desList = []
-    devList = []
-    pubList = []
+    print("currentGameCount: " + curNum)
 
-    #存入运行日期
-    nameList.append("收入日期：" + str(datetime.date.today()))
-    linkList.append("")
-    tagList.append("")
-    desList.append("")
-    devList.append("")
-    pubList.append("")
+    if curNum != lastGameCount:
 
-    for i in range(0, len(firstLinkList)):
-        name = firstNameList[i]
-        temp_url = firstLinkList[i]
-        try:
-            r = requests.get(temp_url, headers=header)
-        except:
-            print("服务器无响应")
+        nameList = []
+        linkList = []
+        tagList = []
+        desList = []
+        devList = []
+        pubList = []
 
-        soup = BeautifulSoup(r.text, 'lxml')
-        temp_tuple = getdetail(soup)
+        #存入运行日期
+        nameList.append("收入日期：" + str(datetime.date.today()))
+        linkList.append("")
+        tagList.append("")
+        desList.append("")
+        devList.append("")
+        pubList.append("")
 
-        nameList.append(name)
-        linkList.append(temp_url)
-        tagList.append(temp_tuple[0])
-        desList.append(temp_tuple[1])
-        devList.append(temp_tuple[2])
-        pubList.append(temp_tuple[3])
+        for i in range(0, len(firstLinkList)):
+            name = firstNameList[i]
+            temp_url = firstLinkList[i]
+            try:
+                r = requests.get(temp_url, headers=header)
+            except:
+                print("服务器无响应")
 
-    #加一个空行
-    nameList.append("   ")
-    linkList.append("   ")
-    tagList.append("   ")
-    desList.append("   ")
-    devList.append("   ")
-    pubList.append("   ")
-    
-    allList = list(zip(nameList, linkList, tagList, desList, devList, pubList))
-    df2 = pd.DataFrame(allList, columns =['Name', 'Link', 'Tag', 'Description', "Developer", "Publisher"])
+            soup = BeautifulSoup(r.text, 'lxml')
+            temp_tuple = getdetail(soup)
 
-    #写到Google sheet里
-    #authorization
-    gc = pygsheets.authorize(service_file = file_path)
-    #open the google spreadsheet ('pysheeetsTest' exists)
-    my_sh = gc.open('Steam每日新收录游戏数据')
-    #select the first sheet
-    wks = my_sh[0]
-    #update the first sheet with df, starting at cell B2
+            nameList.append(name)
+            linkList.append(temp_url)
+            tagList.append(temp_tuple[0])
+            desList.append(temp_tuple[1])
+            devList.append(temp_tuple[2])
+            pubList.append(temp_tuple[3])
 
-    #wks.set_dataframe(df2,(1, 1))
+        #加一个空行
+        nameList.append("   ")
+        linkList.append("   ")
+        tagList.append("   ")
+        desList.append("   ")
+        devList.append("   ")
+        pubList.append("   ")
+        
+        allList = list(zip(nameList, linkList, tagList, desList, devList, pubList))
+        df2 = pd.DataFrame(allList, columns =['Name', 'Link', 'Tag', 'Description', "Developer", "Publisher"])
 
-    prev_data = wks.get_as_df()
-    new_data = pd.concat([df2, prev_data])
-    wks.set_dataframe(new_data,(1, 1))
+        #写到Google sheet里
+        #authorization
+        gc = pygsheets.authorize(service_file = file_path)
+        #open the google spreadsheet ('pysheeetsTest' exists)
+        my_sh = gc.open('Steam每日新收录游戏数据')
+        #select the first sheet
+        wks = my_sh[0]
+        #update the first sheet with df, starting at cell B2
 
-    #把新数据写进文件里
-    file = open(num_path, "w")
-    file.write(str(curNum))
-    file.close()
+        #wks.set_dataframe(df2,(1, 1))
+
+        prev_data = wks.get_as_df()
+        new_data = pd.concat([df2, prev_data])
+        wks.set_dataframe(new_data,(1, 1))
+
+        #把新数据写进文件里
+        file = open(num_path, "w")
+        file.write(str(curNum))
+        file.close()
