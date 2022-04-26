@@ -48,6 +48,7 @@ jobs:
         run: |
           git config --global user.name 'horo-ursa'
           git config --global user.email 'shixuanf@usc.edu'
+          git add lastCount.txt
           git commit -am "Automated report"
           git push
         

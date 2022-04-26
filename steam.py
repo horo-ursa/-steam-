@@ -44,13 +44,11 @@ def steam_spider(lastNum) -> list:
     all_url = []
     for i in range(0, times):
         newUrl = "https://store.steampowered.com/search/results/?query&start=" + str(50 * i) +  "&count=50&dynamic_data=&sort_by=_ASC&ignore_preferences=1&os=win&snr=1_7_7_comingsoon_7&filter=comingsoon&infinite=1"
-        print(newUrl)
         tempResponse = requests.get(newUrl, headers = header).text
         tempData = json.loads(tempResponse)
         idAndName = re.findall("https://store.steampowered.com/app/(\d*?)/(.*?)/", tempData["results_html"])
         for temp in idAndName:
             all_url.append(temp)
-            print(temp)
     
 
     #返回所有url+名字
@@ -71,7 +69,6 @@ def taglist(soup):#标签列表
 def description(soup):  #游戏描述
     a = soup.find(class_="game_description_snippet")
     if a == NULL:
-        print("null")
         return ""
     k = str(a.string).replace('	', '').replace('\n', '').replace('\r', '')
     return k
@@ -79,7 +76,6 @@ def description(soup):  #游戏描述
 def developer(soup):   #开发商
     a = soup.find(id="developers_list")
     if a == NULL:
-        print("null")
         return ""
     k = str(a.a.string)
     return k
@@ -88,7 +84,6 @@ def publisher(soup):   #发行商
     str = ""
     k = soup.find_all(name ="div", attrs={"class":"subtitle column"})
     if k == NULL:
-        print("null")
         return ""
     for i in k:
         if(i.string == "发行商:"):
@@ -116,8 +111,6 @@ if __name__ == "__main__":
     lastGameCount = int(file.readline())
     file.close()
 
-    print("lastGameCount: " + str(lastGameCount))
-
     mylist = steam_spider(lastGameCount)
     firstLinkList = []
     firstNameList = []
@@ -129,8 +122,6 @@ if __name__ == "__main__":
             temp += 1
         else:
             break
-
-    print("currentGameCount: " + str(curNum))
 
     if curNum != lastGameCount:
 
@@ -201,5 +192,5 @@ if __name__ == "__main__":
 
         mmmfile = open(num_path, "r")
         ccc = mmmfile.readline()
-        print("new num: " + ccc)
+        print("new num in file: " + ccc)
         mmmfile.close()
