@@ -49,6 +49,7 @@ def steam_spider(lastNum) -> list:
         idAndName = re.findall("https://store.steampowered.com/app/(\d*?)/(.*?)/", tempData["results_html"])
         for temp in idAndName:
             all_url.append(temp)
+            print(temp)
     
 
     #返回所有url+名字
