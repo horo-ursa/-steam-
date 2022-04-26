@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -69,19 +70,26 @@ def taglist(soup):#标签列表
 
 def description(soup):  #游戏描述
     a = soup.find(class_="game_description_snippet")
-    k = ""
-    if str(a.string) != '':
-        k = str(a.string).replace('	', '').replace('\n', '').replace('\r', '')
+    if a == NULL:
+        print("null")
+        return ""
+    k = str(a.string).replace('	', '').replace('\n', '').replace('\r', '')
     return k
 
 def developer(soup):   #开发商
     a = soup.find(id="developers_list")
+    if a == NULL:
+        print("null")
+        return ""
     k = str(a.a.string)
     return k
 
 def publisher(soup):   #发行商
     str = ""
     k = soup.find_all(name ="div", attrs={"class":"subtitle column"})
+    if k == NULL:
+        print("null")
+        return ""
     for i in k:
         if(i.string == "发行商:"):
             for name in i.parent.find_all(name = "a"):
@@ -98,7 +106,7 @@ def getdetail(soup):
         dev = developer(soup)
         pub = publisher(soup)
     except:
-        print("未完成")
+        print("can't finish")
     return tag,des,dev, pub
 
 if __name__ == "__main__":
