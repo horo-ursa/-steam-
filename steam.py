@@ -225,12 +225,13 @@ if __name__ == "__main__":
         soup = BeautifulSoup(r.text, 'lxml')
         temp_tuple = getdetail(soup)
 
-        nameList.append(name)
-        linkList.append(temp_url)
-        tagList.append(temp_tuple[0])
-        desList.append(temp_tuple[1])
-        devList.append(temp_tuple[2])
-        pubList.append(temp_tuple[3])
+        if ("soundtrack" not in name.lower()) and ("dlc" not in name.lower()) and ("色情" not in temp_tuple[0]):
+            nameList.append(name)
+            linkList.append(temp_url)
+            tagList.append(temp_tuple[0])
+            desList.append(temp_tuple[1])
+            devList.append(temp_tuple[2])
+            pubList.append(temp_tuple[3])
 
     #加一个空行
     nameList.append("   ")
