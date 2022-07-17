@@ -142,10 +142,11 @@ def getdetail(soup):
     return tag,des,dev,pub
 
 if __name__ == "__main__":
-    
+
     #“全部游戏”数据
     gc = pygsheets.authorize(service_file = file_path)
     my_sh = gc.open('Steam每日新收录游戏数据')
+
     #已有数据
     wks = my_sh[1]
     prev_all_game_data = wks.get_as_df()
@@ -170,16 +171,18 @@ if __name__ == "__main__":
 
     firstLinkList = []
     firstNameList = []
+    #nameLinkMap = {}
 
     for i in mylist:
         firstLinkList.append("https://store.steampowered.com/app/" + i[0])
         firstNameList.append(i[1])
+        #nameLinkMap[i[1]] = "https://store.steampowered.com/app/" + i[0]
 
     #更新全部游戏数据的table
     gamedata = list(zip(firstNameList, firstLinkList))
     dupdate_all_game_data = pd.DataFrame(gamedata, columns =['Name', 'Link'])
-    wk_all_games = my_sh[1]
-    wk_all_games.set_dataframe(dupdate_all_game_data,(1, 1))
+    # wk_all_games = my_sh[1]
+    # wk_all_games.set_dataframe(dupdate_all_game_data,(1, 1))
 
     #找出和“全部游戏”数据中不同的，即为新内容
     newLink = []
@@ -189,6 +192,13 @@ if __name__ == "__main__":
         if(firstLinkList[i] not in col_link):
             newLink.append(firstLinkList[i])
             newName.append(firstNameList[i])
+            
+            df_temp = {'Name': firstNameList[i], 'Link' : firstLinkList[i]}
+            prev_all_game_data = prev_all_game_data.append(df_temp, ignore_index = True)
+    
+    wk_all_games = my_sh[1]
+    wk_all_games.set_dataframe(prev_all_game_data,(1, 1))
+    
 
     #更新“每日新增”界面
     nameList = []
